@@ -1,0 +1,80 @@
+# -----------------------------
+## Aliases
+# -----------------------------
+Set-Alias clr Clear-Host
+Set-Alias vi vim
+
+# -----------------------------
+# Functions
+# -----------------------------
+
+# List files in table view
+function ll {
+    Get-ChildItem | Format-Table Name, Length, LastWriteTime
+}
+
+# List files sorted by time with human-readable size
+function lk {
+    Get-ChildItem | Sort-Object LastWriteTime | Select-Object Name,
+    @{ Name = 'Size'; Expression = {
+        $size = $_.Length
+        if ($size -ge 1GB) { "{0:N1}G" -f ($size / 1GB) }
+        elseif ($size -ge 1MB) { "{0:N1}M" -f ($size / 1MB) }
+        elseif ($size -ge 1KB) { "{0:N1}K" -f ($size / 1KB) }
+        else { "$size B" }
+    }},
+    LastWriteTime | Format-Table -AutoSize
+}
+
+# Git-aware prompt (shows current folder + git branch)
+#function prompt {
+#    $currentPath = Split-Path -Leaf -Path (Get-Location)
+#    $gitBranch = ''
+#    if (Test-Path .git) {
+#        try {
+#            $branch = git branch --show-current 2>$null
+#            if ($branch) {
+#                $gitBranch = " ($branch)"
+#           }
+#       } catch { }
+#   }
+#   "PS [$currentPath]$gitBranch> "
+#}
+
+# -----------------------------
+# Modules: PSReadLine (IntelliSense)
+# -----------------------------
+Import-Module PSReadLine
+
+Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+Set-PSReadLineOption -PredictionViewStyle ListView  # Or InlineView
+
+# -----------------------------
+# Modules: CommandNotFound suggestions (PowerToys)
+# -----------------------------
+Import-Module -Name Microsoft.WinGet.CommandNotFound -ErrorAction SilentlyContinue
+
+# -----------------------------
+# Modules: Azure Predictive Plugin (Optional)
+# -----------------------------
+if (-not (Get-Module -ListAvailable -Name Az.Accounts)) {
+    try {
+        Install-Module Az.Accounts -Scope CurrentUser -Force -ErrorAction Stop
+    } catch {
+        Write-Warning "Az.Accounts could not be installed."
+    }
+}
+
+if (-not (Get-Module -ListAvailable -Name Az.Tools.Predictor)) {
+    try {
+        Install-Module Az.Tools.Predictor -Scope CurrentUser -Force -ErrorAction Stop
+    } catch {
+        Write-Warning "Az.Tools.Predictor could not be installed."
+    }
+}
+
+Import-Module Az.Tools.Predictor -ErrorAction SilentlyContinue
+
+# -----------------------------
+# End of Profile
+# -----------------------------
