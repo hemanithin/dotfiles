@@ -1,0 +1,48 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+  echo "Usage: copy <file>"
+  exit 1
+fi
+
+FILE="$1"
+
+if [ ! -f "$FILE" ]; then
+  echo "Error: File not found"
+  exit 1
+fi
+
+EXT="${FILE##*.}"
+EXT=$(echo "$EXT" | tr '[:upper:]' '[:lower:]')
+
+# Text file extensions
+TEXT_EXTS="txt log json yaml yml xml md csv ini conf sh"
+
+for ext in $TEXT_EXTS; do
+  if [ "$EXT" = "$ext" ]; then
+    clip.exe < "$FILE"
+    echo "Copied text to Windows clipboard"
+    exit 0
+  fi
+done
+
+# Image file extensions
+IMAGE_EXTS="png jpg jpeg gif bmp webp"
+
+for ext in $IMAGE_EXTS; do
+  if [ "$EXT" = "$ext" ]; then
+    WIN_PATH=$(wslpath -w "$FILE")
+    powershell.exe -NoProfile -Command "
+      Add-Type -AssemblyName System.Windows.Forms;
+      Add-Type -AssemblyName System.Drawing;
+      \$img = [System.Drawing.Image]::FromFile('$WIN_PATH');
+      [System.Windows.Forms.Clipboard]::SetImage(\$img);
+      \$img.Dispose();
+    "
+    echo "Copied image to Windows clipboard"
+    exit 0
+  fi
+done
+
+echo "Unsupported file type"
+exit 1
