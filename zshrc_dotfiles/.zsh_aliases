@@ -1,0 +1,4 @@
+alias clr='clear && printf "\033c"'
+alias cls='clear && printf "\033c"'
+alias lk='ls -lrth'
+alias vi='nvim'
