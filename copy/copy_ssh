@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Check if file argument is provided
+if [ $# -ne 1 ]; then
+  echo "Usage: copy_ssh <file>"
+  exit 1
+fi
+
+FILE="$1"
+
+if [ ! -f "$FILE" ]; then
+  echo "Error: File '$FILE' not found"
+  exit 1
+fi
+
+# Maximum size for OSC 52 is often limited by the terminal (e.g., 100KB - 1MB)
+# Warn if file is large? For now, just try.
+
+# Encode content to base64 and strip newlines
+ENCODED_CONTENT=$(base64 < "$FILE" | tr -d '\n')
+
+# Send OSC 52 sequence
+# \033]52;c; -> Start OSC 52 to system clipboard (c)
+# \a -> Bell (End of sequence)
+printf "\033]52;c;%s\a" "$ENCODED_CONTENT"
+
+echo "Copied '$FILE' to clipboard via OSC 52"
