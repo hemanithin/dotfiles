@@ -70,7 +70,7 @@ main() {
     # 4. Common Setup (Vim, Copy)
     # --- Vim ---
     log "Setting up Vim..."
-    ln -sf "$TARGET_DIR/vim_dotfile/vim" "$HOME/.vimrc"
+    cp -f "$TARGET_DIR/vim_dotfile/vim" "$HOME/.vimrc"
     success "Vim setup complete"
 
     # --- Copy Utility ---
@@ -85,7 +85,7 @@ main() {
     cp "$TARGET_DIR/copy/copy_ssh" "$HOME/.local/bin/copy_ssh"
     chmod +x "$HOME/.local/bin/copy_ssh"
 
-    success "Copy utilities installed to ~/.local/bin" 
+    success "Copy utilities installed to ~/.local/bin"
     echo "Ensure ~/.local/bin is in your PATH."
 
     # 5. OS Specific Setup (Zsh)
@@ -105,6 +105,11 @@ main() {
             ;;
     esac
 
+    # 6. Cleanup
+    log "Cleaning up dotfiles directory..."
+    rm -rf "$TARGET_DIR"
+    success "Dotfiles directory removed"
+
     success "Setup Complete!"
 }
 
@@ -114,7 +119,7 @@ main() {
 
 install_packages() {
     log "Installing packages for $OS..."
-    
+
     case "$OS" in
         kali)
             sudo apt update
@@ -145,14 +150,16 @@ install_packages() {
 setup_zsh() {
     local SOURCE_DIR="$1"
     log "Setting up Zsh from $SOURCE_DIR..."
-    
-    ln -sf "$TARGET_DIR/zshrc_dotfiles/$SOURCE_DIR/.zshrc" "$HOME/.zshrc"
-    ln -sf "$TARGET_DIR/zshrc_dotfiles/$SOURCE_DIR/.zsh_aliases" "$HOME/.zsh_aliases"
-    
+
+    cp -f "$TARGET_DIR/zshrc_dotfiles/$SOURCE_DIR/.zshrc" "$HOME/.zshrc"
+    cp -f "$TARGET_DIR/zshrc_dotfiles/$SOURCE_DIR/.zsh_aliases" "$HOME/.zsh_aliases"
+
     # Change shell to zsh if not already
     if [ "$SHELL" != "$(which zsh)" ]; then
         log "Changing default shell to zsh..."
-        chsh -s "$(which zsh)"
+        sudo chsh -s "$(which zsh)" "$USER"
+        success "Default shell changed to zsh"
+        log "Please log out and log back in (or restart) for the shell change to take effect."
     fi
 }
 
