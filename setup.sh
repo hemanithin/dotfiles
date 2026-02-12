@@ -2,7 +2,7 @@
 
 # =============================================================================
 #  Dotfiles Setup Script
-#  Usage: curl -fsSL https://linux.setup.hemanithin.me | sh
+#  Usage: curl -fsSL https://linux.hemanithin.me/setup.sh | sh
 # =============================================================================
 
 REPO_URL="https://github.com/hemanithin/dotfiles"
