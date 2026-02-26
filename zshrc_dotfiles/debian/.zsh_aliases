@@ -1,3 +1,4 @@
 alias clr='clear && printf "\033c"'
 alias cls='clear && printf "\033c"'
 alias lk='ls -lrth'
+alias update--='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean'
