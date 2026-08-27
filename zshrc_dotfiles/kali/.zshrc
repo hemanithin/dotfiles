@@ -4,7 +4,7 @@
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
-setopt magicequalsubst     # enable filename expansion for arguments of the form ÔÇÿanything=expressionÔÇÖ
+setopt magicequalsubst     # enable filename expansion for arguments of the form 'anything=expression'
 setopt nonomatch           # hide error message if there is no match for the pattern
 setopt notify              # report the status of background jobs immediately
 setopt numericglobsort     # sort filenames numerically when it makes sense
@@ -92,14 +92,14 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 configure_prompt() {
-    prompt_symbol=Òë┐
+    prompt_symbol=㉿
     # Skull emoji for root terminal
-    [ "$EUID" -eq 0 ] && prompt_symbol=­ƒÆÇ
+    [ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-            PROMPT=$'%F{%(#.blue.green)}ÔöîÔöÇÔöÇ${debian_chroot:+($debian_chroot)ÔöÇ}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))ÔöÇ}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/ÔÇª/%4~.%5~)%b%F{%(#.blue.green)}]\nÔööÔöÇ%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+            PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
             # Right-side prompt with exit codes and background processes
-            #RPROMPT=$'%(?.. %? %F{red}%BÔ¿»%b%F{reset})%(1j. %j %F{yellow}%BÔÜÖ%b%F{reset}.)'
+            #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         oneline)
             PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
@@ -262,6 +262,8 @@ fi
 # Enable fzf key bindings and completion
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 [ -f /usr/share/fzf/completion.zsh ] && source /usr/share/fzf/completion.zsh
+# PATH configurations
+[[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:$PATH"
 export PATH=$HOME/Desktop/jdk1.8.0_202/bin:$PATH
 # Custom scripts
 export PATH="$HOME/customConfig/bin:$PATH"

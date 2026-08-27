@@ -1,12 +1,10 @@
 # ~/.zshrc file for zsh interactive shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
 
-PROMPT=$'%F{yellow}%n%f@%F{yellow}%m%f [%F{blue}%1~%f]\n%F{green}> %f'
-
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
-setopt magicequalsubst     # enable filename expansion for arguments of the form ÔÇÿanything=expressionÔÇÖ
+setopt magicequalsubst     # enable filename expansion for arguments of the form 'anything=expression'
 setopt nonomatch           # hide error message if there is no match for the pattern
 setopt notify              # report the status of background jobs immediately
 setopt numericglobsort     # sort filenames numerically when it makes sense
@@ -93,6 +91,32 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+configure_prompt() {
+    if [ "$color_prompt" = yes ]; then
+        case "$PROMPT_ALTERNATIVE" in
+            oneline)
+                PROMPT=$'%F{yellow}%n%f@%F{yellow}%m%f [%F{blue}%1~%f] %F{green}> %f'
+                ;;
+            twoline|*)
+                PROMPT=$'%F{yellow}%n%f@%F{yellow}%m%f [%F{blue}%1~%f]\n%F{green}> %f'
+                ;;
+        esac
+    else
+        case "$PROMPT_ALTERNATIVE" in
+            oneline)
+                PROMPT=$'%n@%m [%1~] > '
+                ;;
+            twoline|*)
+                PROMPT=$'%n@%m [%1~]\n> '
+                ;;
+        esac
+    fi
+}
+
+PROMPT_ALTERNATIVE=twoline
+NEWLINE_BEFORE_PROMPT=yes
+configure_prompt
+
 toggle_oneline_prompt(){
     if [ "$PROMPT_ALTERNATIVE" = oneline ]; then
         PROMPT_ALTERNATIVE=twoline
@@ -168,6 +192,11 @@ if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
 fi
 
+# enable syntax-highlighting
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    . /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
 # enable command-not-found if installed
 if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
@@ -178,6 +207,11 @@ fi
 # Enable fzf key bindings and completion
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 [ -f /usr/share/fzf/completion.zsh ] && source /usr/share/fzf/completion.zsh
+[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+[ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
+
+# PATH configurations
+[[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:$PATH"
 export PATH=$HOME/Desktop/jdk1.8.0_202/bin:$PATH
 # Custom scripts
 export PATH="$HOME/customConfig/bin:$PATH"
