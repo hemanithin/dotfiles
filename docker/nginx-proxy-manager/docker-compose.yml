@@ -1,0 +1,17 @@
+# Nginx Proxy Manager. Creates the "npm_default" network that other stacks (e.g. trilium) join.
+services:
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - "80:80"     # HTTP
+      - "443:443"   # HTTPS
+      - "81:81"     # Admin UI
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+networks:
+  default:
+    name: npm_default

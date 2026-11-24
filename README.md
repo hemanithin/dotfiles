@@ -4,7 +4,7 @@ Personal config backup.
 
 - `shell/`   – .bashrc, .profile, .bash_logout
 - `git/`     – .gitconfig etc.
-- `docker/`  – docker-compose.yml files (one subfolder per stack)
+- `docker/`  – one subfolder per stack: `nginx-proxy-manager/`, `trilium/` (add more here)
 - `nginx/`   – nginx configs
 - `configs/` – other app configs
 

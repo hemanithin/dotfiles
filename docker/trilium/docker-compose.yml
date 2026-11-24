@@ -1,0 +1,15 @@
+services:
+  trilium:
+    image: triliumnext/trilium:latest
+    container_name: trilium
+    restart: unless-stopped
+    environment:
+      TRILIUM_DATA_DIR: /home/node/trilium-data
+    volumes:
+      - ./data:/home/node/trilium-data
+    networks:
+      - npm_default
+
+networks:
+  npm_default:
+    external: true
